@@ -1,18 +1,30 @@
 "use client";
-import { OrbitControls } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
+import { Environment, OrbitControls } from "@react-three/drei";
+import { Canvas, useLoader, useFrame } from "@react-three/fiber";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import Scene from "./component/Scene";
 
+
+function Model() {
+  const result = useLoader(GLTFLoader, '/black_rat__free_download/scene.gltf');
+  return <primitive object={result.scene} scale={[100, 100, 100]} />
+}
 export default function Home() {
   return (
-    <div className="h-lvh w-full">
-      <Canvas>
+    <div className="h-screen w-full ">
+      <Canvas camera={{ position: [0, 1, 5], fov: 50 }}>
         <ambientLight intensity={0.5} />
-        <pointLight position={[1, 5, 5]} />
+        <directionalLight position={[2, 5, 2]} intensity={1} />
+
         <OrbitControls />
-        <mesh>
-          <sphereGeometry scale={[3, 3, 3]} />
-          <meshBasicMaterial color="black"  wireframe={true}/>
-        </mesh>
+        <Environment preset="city" />
+
+        {/* <Scene />  */}
+        <Model />
+        {/* <mesh>
+          <sphereGeometry args={[9, 10, 10]}   />
+          <meshStandardMaterial  wireframe={true} color="red" />
+        </mesh> */}
       </Canvas>
     </div>
   );
