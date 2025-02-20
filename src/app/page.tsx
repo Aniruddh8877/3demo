@@ -7,7 +7,7 @@ import Scene from "./component/Scene";
 
 function Model() {
   const result = useLoader(GLTFLoader, '/bmw_g20_330i/scene.gltf');
-  return <primitive object={result.scene} scale={[50, 50, 50]} />
+  return <primitive object={result.scene} scale={[2, 2, 2]} />
 }
 export default function Home() {
   return (
@@ -17,7 +17,7 @@ export default function Home() {
         <directionalLight position={[2, 5, 2]} intensity={1} />
 
         <OrbitControls />
-        <Environment preset="city" />
+        <Environment preset="sunset" />
 
         {/* <Scene />  */}
         <Model />
