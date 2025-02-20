@@ -1,0 +1,8 @@
+Model Information:
+* title:	BMW G20 330i
+* source:	https://sketchfab.com/3d-models/bmw-g20-330i-87c972d41e9e4717b2d2db206bf315ae
+* author:	KOElkast1007 (https://sketchfab.com/koelkastasbers)
+
+Model License:
+* license type:	SKETCHFAB Standard (https://sketchfab.com/licenses)
+* requirements:	Under basic restrictions, use worldwide, on all types of media, commercially or not, and in all types of derivative works

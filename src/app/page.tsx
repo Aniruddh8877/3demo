@@ -6,13 +6,13 @@ import Scene from "./component/Scene";
 
 
 function Model() {
-  const result = useLoader(GLTFLoader, '/black_rat__free_download/scene.gltf');
-  return <primitive object={result.scene} scale={[100, 100, 100]} />
+  const result = useLoader(GLTFLoader, '/bmw_g20_330i/scene.gltf');
+  return <primitive object={result.scene} scale={[50, 50, 50]} />
 }
 export default function Home() {
   return (
     <div className="h-screen w-full ">
-      <Canvas camera={{ position: [0, 1, 5], fov: 50 }}>
+      <Canvas camera={{ position: [8, 1, 5], fov: 50 }}>
         <ambientLight intensity={0.5} />
         <directionalLight position={[2, 5, 2]} intensity={1} />
 
