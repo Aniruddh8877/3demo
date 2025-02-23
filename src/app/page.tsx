@@ -2,13 +2,23 @@
 import { Environment, OrbitControls } from "@react-three/drei";
 import { Canvas, useLoader, useFrame } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import Scene from "./component/Scene";
-
+import { useRef } from "react";
+import * as THREE from "three"; // Import THREE for proper typing
 
 function Model() {
   const result = useLoader(GLTFLoader, '/bmw_g20_330i/scene.gltf');
-  return <primitive object={result.scene} scale={[2, 2, 2]} />
+  const modelRef = useRef<THREE.Group | null>(null); // Fix: Type ref correctly
+
+  useFrame(() => {
+    if (modelRef.current) {
+      modelRef.current.rotation.y += .01; // Fix: TypeScript now recognizes `rotation`
+      // modelRef.current.rotation.x += .01;
+    }
+  });
+
+  return <primitive ref={modelRef} object={result.scene} scale={[2, 2, 2]} />;
 }
+
 export default function Home() {
   return (
     <div className="h-screen w-full ">
@@ -18,13 +28,7 @@ export default function Home() {
 
         <OrbitControls />
         <Environment preset="sunset" />
-
-        {/* <Scene />  */}
         <Model />
-        {/* <mesh>
-          <sphereGeometry args={[9, 10, 10]}   />
-          <meshStandardMaterial  wireframe={true} color="red" />
-        </mesh> */}
       </Canvas>
     </div>
   );
