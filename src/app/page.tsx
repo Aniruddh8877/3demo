@@ -7,14 +7,14 @@ import * as THREE from "three";
 
 // Define the cinematic shots (keyframes) for the scroll journey
 const CAMERA_KEYFRAMES = [
-  { t: 0.00, pos: [7, 2, 6], lookAt: [0, 0.5, 0] },     // 1. Intro Wide
-  { t: 0.15, pos: [2.5, 0.8, 3.8], lookAt: [1, 0.5, 2] }, // 2. Headlight close-up
-  { t: 0.30, pos: [2, 0.4, 0.8], lookAt: [0, 0.2, 0.8] }, // 3. Alloy Rims (Side Low)
-  { t: 0.45, pos: [0.3, 1.25, 0.2], lookAt: [0.35, 1.15, -0.5] }, // 4. Driver's Cockpit / Steering
-  { t: 0.55, pos: [0.3, 1.2, 0.2], lookAt: [0, 1.1, -0.2] }, // 4b. Dashboard Pan
-  { t: 0.70, pos: [0, 1.3, 1.9], lookAt: [0, 1.1, -0.5] }, // 5. Back Seat View
-  { t: 0.85, pos: [-3, 1.2, -3.5], lookAt: [0, 0.7, -2] }, // 6. Tail Lights
-  { t: 1.00, pos: [-6, 3, 4], lookAt: [0, 0, 0] },      // 7. Final Top Wide
+  { t: 0.00, pos: [7, 2, 6], lookAt: [0, 0.5, 0] },       // 1. Intro Wide
+  { t: 0.16, pos: [2.5, 0.8, 3.8], lookAt: [1, 0.5, 2] },   // 2. Headlight close-up (aligned with text)
+  { t: 0.33, pos: [2, 0.4, 0.8], lookAt: [0, 0.2, 0.8] },   // 3. Alloy Rims (Side Low) - Aligned perfect center
+  { t: 0.48, pos: [0.3, 1.25, 0.2], lookAt: [0.35, 1.15, -0.5] }, // 4. Driver's Cockpit
+  { t: 0.58, pos: [0.3, 1.2, 0.2], lookAt: [0, 1.1, -0.2] },      // 4b. Dashboard Pan
+  { t: 0.72, pos: [0, 1.3, 1.9], lookAt: [0, 1.1, -0.5] },  // 5. Back Seat View
+  { t: 0.86, pos: [-3, 1.2, -3.5], lookAt: [0, 0.7, -2] },  // 6. Tail Lights
+  { t: 1.00, pos: [-6, 3, 4], lookAt: [0, 0, 0] },          // 7. Final Top Wide
 ];
 
 function LoadingScreen() {
@@ -123,9 +123,25 @@ export default function Home() {
               <section className="h-screen w-full flex flex-col justify-end items-start p-20 pb-40 text-white pointer-events-none">
                 <div className="max-w-md">
                   <h2 className="text-5xl font-bold mb-4 text-gray-300">19" M Light Alloys</h2>
-                  <p className="text-xl">
+                  <p className="text-xl mb-6">
                     Double-spoke style 791 M with performance tyres.
                   </p>
+
+                  {/* Tech Specs / Coordinates Block */}
+                  <div className="border-l-2 border-blue-500 pl-4 space-y-2 opacity-80">
+                    <div className="flex items-center gap-4">
+                      <span className="text-xs font-mono text-blue-400">COORDS</span>
+                      <span className="text-sm font-mono">X: 19.00 Y: 45.32 Z: 12.00</span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <span className="text-xs font-mono text-blue-400">MATERIAL</span>
+                      <span className="text-sm font-mono">ALUMINIUM ALLOY</span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <span className="text-xs font-mono text-blue-400">SPEC</span>
+                      <span className="text-sm font-mono">225/40 R19</span>
+                    </div>
+                  </div>
                 </div>
               </section>
 
