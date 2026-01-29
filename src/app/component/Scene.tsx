@@ -1,37 +1,75 @@
 "use client";
-import { useEffect } from 'react';
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { useEffect, useRef } from "react";
+import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 export default function Scene() {
-    useEffect(() => {
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-        const renderer = new THREE.WebGLRenderer();
+  const mountRef = useRef<HTMLDivElement | null>(null);
 
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
+  useEffect(() => {
+    if (!mountRef.current) return;
 
-        const loader = new GLTFLoader();
-        loader.load('/scene.gltf', function (gltf) {
-            scene.add(gltf.scene);
-            console.log("gltf is lodaded ",gltf);
-        }, undefined, function (error) {
-            console.error(error);
-        });
+    const scene = new THREE.Scene();
 
-        camera.position.z = 5;
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      mountRef.current.clientWidth / mountRef.current.clientHeight,
+      0.1,
+      100
+    );
+    camera.position.z = 5;
 
-        function animate() {
-            requestAnimationFrame(animate);
-            renderer.render(scene, camera);
-        }
-        animate();
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(
+      mountRef.current.clientWidth,
+      mountRef.current.clientHeight
+    );
 
-        return () => {
-            document.body.removeChild(renderer.domElement);
-        };
-    }, []);
+    mountRef.current.appendChild(renderer.domElement);
 
-    return null;
+    // Lights
+    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    dirLight.position.set(5, 5, 5);
+    scene.add(dirLight);
+
+    // Load model
+    const loader = new GLTFLoader();
+    loader.load(
+      "/scene.gltf",
+      (gltf) => {
+        scene.add(gltf.scene);
+        console.log("GLTF loaded", gltf);
+      },
+      undefined,
+      (error) => console.error(error)
+    );
+
+    const animate = () => {
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    };
+    animate();
+
+    // Resize handler
+    const onResize = () => {
+      if (!mountRef.current) return;
+      camera.aspect =
+        mountRef.current.clientWidth / mountRef.current.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(
+        mountRef.current.clientWidth,
+        mountRef.current.clientHeight
+      );
+    };
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+      mountRef.current?.removeChild(renderer.domElement);
+      renderer.dispose();
+    };
+  }, []);
+
+  return <div ref={mountRef} className="w-full h-screen" />;
 }
