@@ -1,8 +1,8 @@
 "use client";
-import { Environment, ScrollControls, Scroll, useScroll } from "@react-three/drei";
+import { Environment, ScrollControls, Scroll, useScroll, useProgress } from "@react-three/drei";
 import { Canvas, useLoader, useFrame, useThree } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { useMemo } from "react";
+import { useMemo, Suspense } from "react";
 import * as THREE from "three";
 
 // Define the cinematic shots (keyframes) for the scroll journey
@@ -16,6 +16,27 @@ const CAMERA_KEYFRAMES = [
   { t: 0.85, pos: [-3, 1.2, -3.5], lookAt: [0, 0.7, -2] }, // 6. Tail Lights
   { t: 1.00, pos: [-6, 3, 4], lookAt: [0, 0, 0] },      // 7. Final Top Wide
 ];
+
+function LoadingScreen() {
+  const { progress, active } = useProgress();
+
+  return (
+    <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black transition-opacity duration-1000 ${active ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+      <div className="w-full max-w-md px-8 text-center">
+        <h2 className="text-4xl font-bold text-white mb-2 tracking-widest">BMW</h2>
+        <div className="text-gray-400 text-sm mb-6 uppercase tracking-widest">Sheer Driving Pleasure</div>
+
+        <div className="w-full h-1 bg-gray-900 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-blue-500 transition-all duration-200 ease-out"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+        <div className="mt-2 text-right text-white font-mono text-sm">{Math.round(progress)}%</div>
+      </div>
+    </div>
+  );
+}
 
 function CameraRig() {
   const scroll = useScroll();
@@ -68,87 +89,91 @@ function Model() {
 export default function Home() {
   return (
     <div className="h-screen w-full bg-gradient-to-br from-gray-950 to-black">
+      <LoadingScreen />
+
       <Canvas camera={{ position: [7, 2, 6], fov: 45 }}>
         <ambientLight intensity={0.5} />
         <directionalLight position={[5, 10, 5]} intensity={1.5} />
         <spotLight position={[-5, 5, 0]} intensity={1} angle={0.5} penumbra={1} />
         <Environment preset="night" />
 
-        <ScrollControls pages={8} damping={0.15}>
-          <CameraRig />
-          <Model />
+        <Suspense fallback={null}>
+          <ScrollControls pages={8} damping={0.15}>
+            <CameraRig />
+            <Model />
 
-          <Scroll html style={{ width: '100%' }}>
-            {/* 1. Intro */}
-            <section className="h-screen w-full flex flex-col justify-center items-start p-20 text-white pointer-events-none">
-              <h1 className="text-8xl font-bold mb-4 drop-shadow-2xl">The BMW 330i</h1>
-              <p className="text-2xl font-light opacity-90">Sheer Driving Pleasure defined.</p>
-            </section>
+            <Scroll html style={{ width: '100%' }}>
+              {/* 1. Intro */}
+              <section className="h-screen w-full flex flex-col justify-center items-start p-20 text-white pointer-events-none">
+                <h1 className="text-8xl font-bold mb-4 drop-shadow-2xl">The BMW 330i</h1>
+                <p className="text-2xl font-light opacity-90">Sheer Driving Pleasure defined.</p>
+              </section>
 
-            {/* 2. Headlights */}
-            <section className="h-screen w-full flex flex-col justify-center items-end p-20 text-white pointer-events-none">
-              <div className="max-w-md text-right">
-                <h2 className="text-5xl font-bold mb-4 text-blue-200">Laserlight Technology</h2>
-                <p className="text-xl">
-                  Adaptive LED headlights that illuminate the road like never before.
-                </p>
-              </div>
-            </section>
+              {/* 2. Headlights */}
+              <section className="h-screen w-full flex flex-col justify-center items-end p-20 text-white pointer-events-none">
+                <div className="max-w-md text-right">
+                  <h2 className="text-5xl font-bold mb-4 text-blue-200">Laserlight Technology</h2>
+                  <p className="text-xl">
+                    Adaptive LED headlights that illuminate the road like never before.
+                  </p>
+                </div>
+              </section>
 
-            {/* 3. Rims */}
-            <section className="h-screen w-full flex flex-col justify-end items-start p-20 pb-40 text-white pointer-events-none">
-              <div className="max-w-md">
-                <h2 className="text-5xl font-bold mb-4 text-gray-300">19" M Light Alloys</h2>
-                <p className="text-xl">
-                  Double-spoke style 791 M with performance tyres.
-                </p>
-              </div>
-            </section>
+              {/* 3. Rims */}
+              <section className="h-screen w-full flex flex-col justify-end items-start p-20 pb-40 text-white pointer-events-none">
+                <div className="max-w-md">
+                  <h2 className="text-5xl font-bold mb-4 text-gray-300">19" M Light Alloys</h2>
+                  <p className="text-xl">
+                    Double-spoke style 791 M with performance tyres.
+                  </p>
+                </div>
+              </section>
 
-            {/* 4. Cockpit */}
-            <section className="h-screen w-full flex flex-col justify-center items-center p-20 text-white pointer-events-none">
-              <div className="max-w-lg text-center bg-black/30 backdrop-blur-sm p-8 rounded-2xl">
-                <h2 className="text-5xl font-bold mb-4 text-orange-100">Driver-Centric Cockpit</h2>
-                <p className="text-xl">
-                  BMW Live Cockpit Professional with fully digital display.
-                </p>
-              </div>
-            </section>
+              {/* 4. Cockpit */}
+              <section className="h-screen w-full flex flex-col justify-center items-center p-20 text-white pointer-events-none">
+                <div className="max-w-lg text-center bg-black/30 backdrop-blur-sm p-8 rounded-2xl">
+                  <h2 className="text-5xl font-bold mb-4 text-orange-100">Driver-Centric Cockpit</h2>
+                  <p className="text-xl">
+                    BMW Live Cockpit Professional with fully digital display.
+                  </p>
+                </div>
+              </section>
 
-            {/* 4b. Dashboard Details (Hidden Spacer or Extra Text) */}
-            <section className="h-screen w-full hidden"></section>
+              {/* 4b. Dashboard Details (Hidden Spacer or Extra Text) */}
+              <section className="h-screen w-full hidden"></section>
 
-            {/* 5. Back Seat */}
-            <section className="h-screen w-full flex flex-col justify-center items-start p-20 text-white pointer-events-none">
-              <div className="max-w-md bg-black/40 backdrop-blur-md p-6 rounded-xl">
-                <h2 className="text-5xl font-bold mb-4">First-Class Comfort</h2>
-                <p className="text-xl">
-                  Spacious rear seating with dedicated climate control.
-                </p>
-              </div>
-            </section>
+              {/* 5. Back Seat */}
+              <section className="h-screen w-full flex flex-col justify-center items-start p-20 text-white pointer-events-none">
+                <div className="max-w-md bg-black/40 backdrop-blur-md p-6 rounded-xl">
+                  <h2 className="text-5xl font-bold mb-4">First-Class Comfort</h2>
+                  <p className="text-xl">
+                    Spacious rear seating with dedicated climate control.
+                  </p>
+                </div>
+              </section>
 
-            {/* 6. Tail Lights */}
-            <section className="h-screen w-full flex flex-col justify-center items-end p-20 text-white pointer-events-none">
-              <div className="max-w-md text-right">
-                <h2 className="text-5xl font-bold mb-4 text-red-400">Iconic L-Shape Lights</h2>
-                <p className="text-xl">
-                  Full LED rear lights with 3D sculpted lenses.
-                </p>
-              </div>
-            </section>
+              {/* 6. Tail Lights */}
+              <section className="h-screen w-full flex flex-col justify-center items-end p-20 text-white pointer-events-none">
+                <div className="max-w-md text-right">
+                  <h2 className="text-5xl font-bold mb-4 text-red-400">Iconic L-Shape Lights</h2>
+                  <p className="text-xl">
+                    Full LED rear lights with 3D sculpted lenses.
+                  </p>
+                </div>
+              </section>
 
-            {/* 7. Final CTA */}
-            <section className="h-screen w-full flex flex-col justify-center items-center p-20 text-white text-center pointer-events-none">
-              <h2 className="text-8xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-white">
-                Own the Road
-              </h2>
-              <button className="px-10 py-4 bg-white text-black text-2xl font-bold rounded-full hover:bg-blue-500 hover:text-white transition-all transform hover:scale-110 shadow-lg cursor-pointer pointer-events-auto">
-                Schedule Test Drive
-              </button>
-            </section>
-          </Scroll>
-        </ScrollControls>
+              {/* 7. Final CTA */}
+              <section className="h-screen w-full flex flex-col justify-center items-center p-20 text-white text-center pointer-events-none">
+                <h2 className="text-8xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-white">
+                  Own the Road
+                </h2>
+                <button className="px-10 py-4 bg-white text-black text-2xl font-bold rounded-full hover:bg-blue-500 hover:text-white transition-all transform hover:scale-110 shadow-lg cursor-pointer pointer-events-auto">
+                  Schedule Test Drive
+                </button>
+              </section>
+            </Scroll>
+          </ScrollControls>
+        </Suspense>
       </Canvas>
     </div>
   );
